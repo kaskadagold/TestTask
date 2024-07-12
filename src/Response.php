@@ -7,9 +7,9 @@ class Response
     public int $code;
     public string $content;
     public array $headers;
-    
+
     public function __construct (
-        string $content,
+        string $content = '',
         int $code = 200,
         string $header = 'Content-Type: text/html',
     ) {
@@ -18,7 +18,8 @@ class Response
         $this->content = $content;
     }
 
-    public function newHeader(string $header) {
+    public function newHeader(string $header): void
+    {
         $this->headers[] = $header;
     }
 
@@ -26,10 +27,9 @@ class Response
     {
         http_response_code($this->code);
 
+        $headers = implode('; ', $this->headers);
         if (! headers_sent()) {
-            foreach ($this->headers as $header) {
-                header($header, true);
-            }
+            header($headers, true);
         }
 
         echo $this->content;

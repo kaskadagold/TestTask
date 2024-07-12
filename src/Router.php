@@ -30,12 +30,9 @@ class Router{
     {
         foreach ($this->routes as $route)
         {
-            if ($route->url === $requestUri && $route->method === $requestMethod) {
+            if ($route->match($requestUri, $requestMethod)) {
                 return $route->run($requestUri);
             }
-            // if ($route->match($request)) {
-            //     return $route->run($request);
-            // }
         }
 
         throw new PageNotFoundException();

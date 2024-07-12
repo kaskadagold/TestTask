@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 error_reporting(E_ALL);
 ini_set('display_errors', true);
 
@@ -13,7 +15,9 @@ use App\Application;
 $router = new Router();
 
 $router->get('/', [PagesController::class, 'home']);
-$router->get('/error', [PagesController::class, 'error']);
+$router->get('/create', [PagesController::class, 'create']);
+$router->post('/create', [PagesController::class, 'store']);
+$router->post('/delete/*', [PagesController::class, 'delete']);
 
 $application = new Application($router);
 $response = $application->run($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);

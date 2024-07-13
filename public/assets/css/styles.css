@@ -33,7 +33,15 @@ th, td {
     display: block;
 }
 
+.flex {
+    display: flex;
+}
+
 .my-10 {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.content-between {
+    justify-content: space-between;
 }

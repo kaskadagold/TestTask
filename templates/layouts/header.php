@@ -2,10 +2,13 @@
 /** 
  * @var ?string $pageTitle
  * @var ?string $headerTitle
+ * @var bool $isAuthorized
+ * @var ?bool $isLoginPage
  */
 
 $pageTitle ??= 'Тестовое приложение';
 $headerTitle ??= $pageTitle;
+$isLoginPage ??= false;
 ?>
 
 <!DOCTYPE html>
@@ -16,4 +19,26 @@ $headerTitle ??= $pageTitle;
 </head>
 
 <body>
-    <h3><?= htmlspecialchars($headerTitle) ?></h3>
+    <div class="flex content-between">
+        <h3><?= htmlspecialchars($headerTitle) ?></h3>
+
+        <?php 
+        if (! $isLoginPage) {
+            if (! $isAuthorized) { ?>
+                <a href="/login">
+                    Войти
+                </a>
+            <?php 
+            } else { 
+            ?>
+                <div>
+                    <form action="/logout" method="post">
+                        <input type="submit" name="logout" value="Выйти">
+                    </form>
+                </div>
+            <?php 
+            }
+        }
+        ?>
+    </div>
+    

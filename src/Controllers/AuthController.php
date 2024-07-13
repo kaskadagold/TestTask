@@ -42,11 +42,6 @@ class AuthController extends Controller
             $_SESSION['id'] = $user->id;
             $_SESSION['userName'] = $user->name;
 
-            setcookie('id', $user->id, [
-                'expires' => time() + 3600 * 24 * 60,
-                'path' => '/',
-            ]);
-
             $error = false;
         }
 

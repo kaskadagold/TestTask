@@ -22,7 +22,7 @@ class Database
         $connection = new \PDO(
             $dsn,
             $connectionData['username'],
-            $connectionData['password'],
+            $connectionData['user_pass'],
         );
 
         return $connection;

@@ -18,7 +18,7 @@ if ($error !== null) {
         <?php View::includeTemplate('forms/concrete-form-fields/login-form-fields.php'); ?>
 
         <input type="submit" name="login" value="Войти">
-        <a href="/">Отмена</a>
+        <a href="/" class="mx-10">Отмена</a>
     </form>
 </div>
 

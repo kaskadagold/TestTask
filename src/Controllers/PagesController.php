@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Repositories\UsersRepository;
 use App\Response;
 use App\Services\AuthorizationService;
+use App\Services\UserFormService;
 use App\Services\ValidationService;
 
 class PagesController extends Controller
@@ -27,11 +28,17 @@ class PagesController extends Controller
             unset($_SESSION['accessDenied']);
         }
 
+        $userName = '';
+        if ($isAuthorized = AuthorizationService::isAuthorized()) {
+            $userName = $_SESSION['userName'];
+        }
+
         return $this->view('pages/home.php', [
             'users' => $users,
             'success' => $success,
             'error' => $error,
-            'isAuthorized' => AuthorizationService::isAuthorized(),
+            'isAuthorized' => $isAuthorized,
+            'userName' => $userName,
             'isAdmin' => $this->repository()->isAdmin(),
         ]);
     }
@@ -43,23 +50,27 @@ class PagesController extends Controller
             return new Response(header: 'Location: ' . static::REDIRECT_URL);
         }
 
-        $error = null;
+        $userName = '';
+        if ($isAuthorized = AuthorizationService::isAuthorized()) {
+            $userName = $_SESSION['userName'];
+        }
+
+        $errors = [];
         if (isset($_SESSION['userFormError'])) {
-            $error = $_SESSION['userFormError'];
+            $errors = $_SESSION['userFormError'];
             unset($_SESSION['userFormError']);
         }
 
         return $this->view('pages/create.php', [
-            'error' => $error,
-            'isAuthorized' => AuthorizationService::isAuthorized(),
+            'errors' => $errors,
+            'isAuthorized' => $isAuthorized,
+            'userName' => $userName,
         ]);
     }
 
     public function store(): Response
     {
         $redirectUrl = static::REDIRECT_URL;
-        $success = false;
-        $error = false;
 
         if (! $this->repository()->isAdmin()) {
             $_SESSION['accessDenied'] = 'Доступ запрещен. Вы не администратор';
@@ -73,27 +84,10 @@ class PagesController extends Controller
             'passwordConfirmation' => $_POST['password_confirmation'],
         ];
 
-        $validator = new ValidationService();
+        $result = $this->userFormService()->create($fields);
 
-        $fields['name'] = $validator->validateData($fields['name']);
-        $fields['email'] = $validator->validateData($fields['email']);
-
-        if (!$error = $validator->validateUserForm($fields)) {
-            $hashPass = password_hash($fields['password'], PASSWORD_DEFAULT);
-            if (! ($this->repository()->create($fields['name'], $fields['email'], $hashPass)) ?: null) {
-                $error = 'Ошибка при создании пользователя';
-            } else {
-                $success = 'Новый пользователь успешно создан';
-            }
-        }
-
-        if ($error) {
-            $_SESSION['userFormError'] = $error;
+        if (! $result) {
             $redirectUrl .= 'create';
-        }
-
-        if ($success) {
-            $_SESSION['userFormSuccess'] = $success;
         }
 
         return new Response(header: 'Location: ' . $redirectUrl);
@@ -108,9 +102,27 @@ class PagesController extends Controller
             return new Response(header: 'Location: ' . $redirectUrl);
         }
 
-        $this->repository()->delete($id);
+        $code = $this->userFormService()->destroy($id);
 
-        return new Response(header: 'Location: ' . $redirectUrl);
+        return new Response(code: $code, header: 'Location: ' . $redirectUrl);
+    }
+
+    public function destroy(): Response
+    {
+        if (! $this->repository()->isAdmin()) {
+            return new Response(code: 403);
+        }
+
+        $id = $_POST['id'];
+        
+        $code = $this->userFormService()->destroy($id);
+
+        return new Response(code: $code);
+    }
+
+    private function userFormService(): UserFormService
+    {
+        return new UserFormService($this->repository());
     }
 
     private function repository(): UsersRepository

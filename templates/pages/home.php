@@ -4,12 +4,13 @@
  * @var ?string $success
  * @var ?string $error
  * @var bool $isAuthorized
+ * @var string $userName
  * @var bool $isAdmin
  */
 
 use App\View;
 
-View::includeTemplate('layouts/header.php', ['headerTitle' => 'Список пользователей', 'isAuthorized' => $isAuthorized]);
+View::includeTemplate('layouts/header.php', ['headerTitle' => 'Список пользователей', 'isAuthorized' => $isAuthorized, 'userName' => $userName]);
 
 if ($success !== null) {
     View::includeTemplate('blocks/messages/success.php', ['message' => $success]);
@@ -36,25 +37,33 @@ if ($isAdmin) {
         <table>
             <tr>
                 <?php if ($isAdmin) { ?>
-                    <th class="deleteButton">Удалить</th>
+                    <th>Удалить</th>
                 <?php } ?>
-                <th class="nameField">Имя</th>
-                <th class="phoneField">Email</th>
+                <th>Имя</th>
+                <th>Email</th>
             <tr>
 
             <?php foreach ($users as $user) { ?>
-                <tr>
+                <tr id="user<?= $user->id ?>">
                     <?php if ($isAdmin) { ?>
                         <td>
+                            <!-- Удаление пользователя с помощью AJAX запроса -->
+                            <button name="deleteButton" class="image-button" value="<?= $user->id ?>">
+                                <img src="/assets/images/recycle-bin.png" alt="Удалить" title="Удалить">
+                            </button>
+
+                            <!-- Удаление пользователя без AJAX запроса -->
+                            <?php /*
                             <form action="/delete/<?= $user->id ?>" method="post">
                                 <button class="image-button">
                                     <img src="/assets/images/recycle-bin.png" alt="Удалить" title="Удалить">
                                 </button>
                             </form>
+                            */ ?>
                         </td>
                     <?php } ?>
-                    <td class="nameField"><?= $user->name ?></td>
-                    <td class="phoneField"><?= $user->email ?></td>
+                    <td><?= $user->name ?></td>
+                    <td><?= $user->email ?></td>
                 </tr>
             <?php } ?>
         </table>

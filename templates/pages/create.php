@@ -2,14 +2,17 @@
 /** 
  * @var ?string $error
  * @var bool $isAuthorized
+ * @var string $userName
  */
 
 use App\View;
 
-View::includeTemplate('layouts/header.php', ['headerTitle' => 'Создание новго пользователя', 'error' => $error, 'isAuthorized' => $isAuthorized]);
+View::includeTemplate('layouts/header.php', ['headerTitle' => 'Создание новго пользователя', 'isAuthorized' => $isAuthorized, 'userName' => $userName]);
 
-if ($error !== null) { 
-    View::includeTemplate('blocks/messages/error.php', ['message' => $error]);
+if (! empty($errors)) {
+    foreach ($errors as $error) {
+        View::includeTemplate('blocks/messages/error.php', ['message' => $error]);
+    }
 }
 ?>
 

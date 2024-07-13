@@ -42,6 +42,23 @@ th, td {
     margin-bottom: 10px;
 }
 
+.mx-10 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.mr-20 {
+    margin-right: 20px;
+}
+
+.ml-20 {
+    margin-left: 20px;
+}
+
 .content-between {
     justify-content: space-between;
+}
+
+.items-center {
+    align-items: center;
 }

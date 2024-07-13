@@ -79,6 +79,28 @@ class UsersRepository
         return false;
     }
 
+    public function getUserByEmail(string $email): User | bool
+    {
+        $connection = $this->database()->connect();
+
+        $query = $connection->prepare(
+            'SELECT *
+            FROM `users`
+            WHERE `email` = :email
+            LIMIT 1'
+        );
+        $query->bindParam(':email', $email);
+        $query->execute();
+
+        $query->setFetchMode(PDO::FETCH_CLASS|PDO::FETCH_PROPS_LATE, User::class, [-1, '', '', '', '']);
+
+        if ($temp = $query->fetch()) {
+            return $temp;
+        }
+
+        return false;
+    }
+
     public function isAdmin(): bool
     {
         if (isset($_SESSION['id'])) {

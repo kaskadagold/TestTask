@@ -40,6 +40,7 @@ class AuthController extends Controller
         if ($user && password_verify($password, $user->password)) {
             $_SESSION['auth'] = true;
             $_SESSION['id'] = $user->id;
+            $_SESSION['userName'] = $user->name;
 
             setcookie('id', $user->id, [
                 'expires' => time() + 3600 * 24 * 60,
@@ -63,6 +64,7 @@ class AuthController extends Controller
 
         unset($_SESSION['auth']);
         unset($_SESSION['id']);
+        unset($_SESSION['userName']);
 
         return new Response(header: 'Location: ' . $redirectUrl);
     }

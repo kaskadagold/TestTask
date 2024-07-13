@@ -20,6 +20,8 @@ $router->get('/create', [PagesController::class, 'create']);
 $router->post('/create', [PagesController::class, 'store']);
 $router->post('/delete/*', [PagesController::class, 'delete']);
 
+$router->post('/delete-ajax', [PagesController::class, 'destroy']);
+
 $router->get('/login', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'store']);
 $router->post('/logout', [AuthController::class, 'destroy']);

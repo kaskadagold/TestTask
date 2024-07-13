@@ -13,6 +13,7 @@ class Config
         $this->configDir = $configDir;
     }
 
+    // Загрузка всех php-файлов из указанной директории
     public function load(): static
     {
         $files = scandir($this->configDir);
@@ -36,7 +37,8 @@ class Config
         return $this;
     }
 
-    public function get(string $key, $default = null)
+    // Получение конфигураций (вложенные конфигурации указываются через точку)
+    public function get(string $key, $default = null): mixed
     {
         $data = $this->config;
 

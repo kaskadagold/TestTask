@@ -103,8 +103,8 @@ class UsersRepository
 
     public function isAdmin(): bool
     {
-        if (isset($_SESSION['id'])) {
-            $user = $this->getUserById($_SESSION['id']);
+        if (isset($_SESSION['user']['id'])) {
+            $user = $this->getUserById($_SESSION['user']['id']);
             if ($user && $user->name === 'admin' && password_verify('admin', $user->password)) {
                 return true;
             }

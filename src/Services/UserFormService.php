@@ -13,6 +13,7 @@ class UserFormService
     {
         $errors = [];
         $success = false;
+
         $fields['name'] = $this->validateData($fields['name']);
         $fields['email'] = $this->validateData($fields['email']);
 
@@ -36,7 +37,7 @@ class UserFormService
         return true;
     }
 
-    public function destroy(string $id): bool | int
+    public function destroy(string $id): int
     {
         if ((! is_numeric($id)) || gettype($id) === 'double') {
             return 400;

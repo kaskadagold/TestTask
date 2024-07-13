@@ -2,20 +2,16 @@ html {
     font-size: 16px;
 }
 
-h3 {
+h2 {
     font-size: 1.5rem;
 }
 
-.image-button {
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
+.text-green {
+    color: green;
 }
 
-img {
-    width: 100%;
+.text-red {
+    color: red;
 }
 
 table, th, td {
@@ -29,12 +25,32 @@ th, td {
     text-align: center;
 }
 
+img {
+    width: 100%;
+}
+
+.image-button {
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
 .block {
     display: block;
 }
 
 .flex {
     display: flex;
+}
+
+.content-between {
+    justify-content: space-between;
+}
+
+.items-center {
+    align-items: center;
 }
 
 .my-10 {
@@ -53,12 +69,4 @@ th, td {
 
 .ml-20 {
     margin-left: 20px;
-}
-
-.content-between {
-    justify-content: space-between;
-}
-
-.items-center {
-    align-items: center;
 }

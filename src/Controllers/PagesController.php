@@ -6,12 +6,12 @@ use App\Repositories\UsersRepository;
 use App\Response;
 use App\Services\AuthorizationService;
 use App\Services\UserFormService;
-use App\Services\ValidationService;
 
 class PagesController extends Controller
 {
     const REDIRECT_URL = '/';
 
+    // Получение и отображение полного списка пользователей
     public function home(): Response
     {
         $users = $this->repository()->getUsers();
@@ -30,7 +30,7 @@ class PagesController extends Controller
 
         $userName = '';
         if ($isAuthorized = AuthorizationService::isAuthorized()) {
-            $userName = $_SESSION['userName'];
+            $userName = AuthorizationService::getUserName();
         }
 
         return $this->view('pages/home.php', [
@@ -43,6 +43,7 @@ class PagesController extends Controller
         ]);
     }
 
+    // Отображение страницы с формой создания пользователя
     public function create(): Response
     {
         if (! $this->repository()->isAdmin()) {
@@ -52,7 +53,7 @@ class PagesController extends Controller
 
         $userName = '';
         if ($isAuthorized = AuthorizationService::isAuthorized()) {
-            $userName = $_SESSION['userName'];
+            $userName = AuthorizationService::getUserName();
         }
 
         $errors = [];
@@ -68,6 +69,7 @@ class PagesController extends Controller
         ]);
     }
 
+    // Сохранение созданного пользователя в БД
     public function store(): Response
     {
         $redirectUrl = static::REDIRECT_URL;
@@ -81,7 +83,7 @@ class PagesController extends Controller
             'name' => $_POST['name'] ?? null,
             'email' => $_POST['email'] ?? null,
             'password' => $_POST['password'] ?? null,
-            'passwordConfirmation' => $_POST['password_confirmation'],
+            'passwordConfirmation' => $_POST['password_confirmation'] ?? null,
         ];
 
         $result = $this->userFormService()->create($fields);
@@ -93,6 +95,7 @@ class PagesController extends Controller
         return new Response(header: 'Location: ' . $redirectUrl);
     }
 
+    // Удаление пользователя из БД без AJAX-запроса
     public function delete(string $id): Response
     {
         $redirectUrl = static::REDIRECT_URL;
@@ -107,6 +110,7 @@ class PagesController extends Controller
         return new Response(code: $code, header: 'Location: ' . $redirectUrl);
     }
 
+    // Удаление пользователя из БД с исользованием AJAX-запроса
     public function destroy(): Response
     {
         if (! $this->repository()->isAdmin()) {

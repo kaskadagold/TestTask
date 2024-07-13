@@ -4,12 +4,12 @@
  * @var ?string $headerTitle
  * @var bool $isAuthorized
  * @var string $userName
- * @var ?bool $isLoginPage
+ * @var ?bool $isLoginShown
  */
 
 $pageTitle ??= 'Тестовое приложение';
 $headerTitle ??= $pageTitle;
-$isLoginPage ??= false;
+$isLoginShown ??= true;
 ?>
 
 <!DOCTYPE html>
@@ -27,10 +27,10 @@ $isLoginPage ??= false;
 
 <body class="ml-20">
     <div class="flex content-between items-center">
-        <h3><?= htmlspecialchars($headerTitle) ?></h3>
+        <h2><?= htmlspecialchars($headerTitle) ?></h2>
 
         <?php 
-        if (! $isLoginPage) {
+        if ($isLoginShown) {
             if (! $isAuthorized) { ?>
                 <a href="/login" class="mr-20">
                     Войти
@@ -38,12 +38,12 @@ $isLoginPage ??= false;
             <?php 
             } else { 
             ?>
-                <div class="flex items-center mr-20">
+                <nav class="flex items-center mr-20">
                     <p class="mx-10"><?= $userName ?></p>
                     <form action="/logout" method="post" class="mx-10">
                         <input type="submit" name="logout" value="Выйти">
                     </form>
-                </div>
+                </nav>
             <?php 
             }
         }

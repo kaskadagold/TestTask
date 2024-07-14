@@ -9,12 +9,20 @@ use App\Services\UserFormService;
 
 class PagesController extends Controller
 {
-    const REDIRECT_URL = '/';
+    public const REDIRECT_URL = '/';
+    private readonly UsersRepository $repository;
+    private readonly UserFormService $userFormService;
+
+    public function __construct()
+    {
+        $this->repository = new UsersRepository();
+        $this->userFormService = new UserFormService($this->repository);
+    }
 
     // Получение и отображение полного списка пользователей
     public function home(): Response
     {
-        $users = $this->repository()->getUsers();
+        $users = $this->repository->getUsers();
 
         $success = null;
         if (isset($_SESSION['userFormSuccess'])) {
@@ -39,14 +47,14 @@ class PagesController extends Controller
             'error' => $error,
             'isAuthorized' => $isAuthorized,
             'userName' => $userName,
-            'isAdmin' => $this->repository()->isAdmin(),
+            'isAdmin' => $this->repository->isAdmin(),
         ]);
     }
 
     // Отображение страницы с формой создания пользователя
     public function create(): Response
     {
-        if (! $this->repository()->isAdmin()) {
+        if (! $this->repository->isAdmin()) {
             $_SESSION['accessDenied'] = 'Доступ запрещен. Вы не администратор';
             return new Response(header: 'Location: ' . static::REDIRECT_URL);
         }
@@ -74,7 +82,7 @@ class PagesController extends Controller
     {
         $redirectUrl = static::REDIRECT_URL;
 
-        if (! $this->repository()->isAdmin()) {
+        if (! $this->repository->isAdmin()) {
             $_SESSION['accessDenied'] = 'Доступ запрещен. Вы не администратор';
             return new Response(header: 'Location: ' . $redirectUrl);
         }
@@ -86,7 +94,7 @@ class PagesController extends Controller
             'passwordConfirmation' => $_POST['password_confirmation'] ?? null,
         ];
 
-        $result = $this->userFormService()->create($fields);
+        $result = $this->userFormService->create($fields);
 
         if (! $result) {
             $redirectUrl .= 'create';
@@ -100,12 +108,12 @@ class PagesController extends Controller
     {
         $redirectUrl = static::REDIRECT_URL;
 
-        if (! $this->repository()->isAdmin()) {
+        if (! $this->repository->isAdmin()) {
             $_SESSION['accessDenied'] = 'Доступ запрещен. Вы не администратор';
             return new Response(header: 'Location: ' . $redirectUrl);
         }
 
-        $code = $this->userFormService()->destroy($id);
+        $code = $this->userFormService->destroy($id);
 
         return new Response(code: $code, header: 'Location: ' . $redirectUrl);
     }
@@ -113,24 +121,14 @@ class PagesController extends Controller
     // Удаление пользователя из БД с исользованием AJAX-запроса
     public function destroy(): Response
     {
-        if (! $this->repository()->isAdmin()) {
+        if (! $this->repository->isAdmin()) {
             return new Response(code: 403);
         }
 
         $id = $_POST['id'];
         
-        $code = $this->userFormService()->destroy($id);
+        $code = $this->userFormService->destroy($id);
 
         return new Response(code: $code);
-    }
-
-    private function userFormService(): UserFormService
-    {
-        return new UserFormService($this->repository());
-    }
-
-    private function repository(): UsersRepository
-    {
-        return new UsersRepository();
     }
 }

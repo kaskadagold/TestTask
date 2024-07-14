@@ -32,7 +32,7 @@ unset($connection);
 
 $adminName = $config->get('admin.name');
 $adminEmail = $config->get('admin.email');
-$adminPass = $config->get('admin.password');
+$adminPass = password_hash($config->get('admin.password'), PASSWORD_DEFAULT);
 
 $connection = new \PDO(
     'mysql:host=' . $hostname . ';dbname=' . $database,

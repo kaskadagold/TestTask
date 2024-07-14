@@ -18,7 +18,6 @@ class Application
      * @param string $requestUri
      * @param string $requestMethod
      * @return \App\Response
-     * @throws PageNotFoundException
      */
     public function run(string $requestUri, string $requestMethod): Response
     {

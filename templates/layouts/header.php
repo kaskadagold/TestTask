@@ -49,4 +49,3 @@ $isLoginShown ??= true;
         }
         ?>
     </div>
-    

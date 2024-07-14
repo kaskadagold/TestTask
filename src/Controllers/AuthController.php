@@ -8,7 +8,13 @@ use App\Services\AuthorizationService;
 
 class AuthController extends Controller
 {
-    const REDIRECT_URL = '/';
+    public const REDIRECT_URL = '/';
+    private readonly UsersRepository $repository;
+
+    public function __construct()
+    {
+        $this->repository = new UsersRepository();
+    }
 
     // Отображение страницы с формой авторизации
     public function login(): Response
@@ -32,9 +38,9 @@ class AuthController extends Controller
         $redirectUrl = static::REDIRECT_URL;
         $error = true;
 
-        $name = $this->validateData($_POST['name']);
-        $password = $_POST['password'];
-        $user = $this->repository()->getUserByName($name);
+        $name = $this->validateData($_POST['name'] ?? null);
+        $password = $_POST['password'] ?? null;
+        $user = $this->repository->getUserByName($name);
 
         if ($user && password_verify($password, $user->password)) {
             $_SESSION['auth'] = true;
@@ -61,11 +67,6 @@ class AuthController extends Controller
         unset($_SESSION['user']);
 
         return new Response(header: 'Location: ' . $redirectUrl);
-    }
-
-    private function repository(): UsersRepository
-    {
-        return new UsersRepository();
     }
 
     private function validateData(string $data): string

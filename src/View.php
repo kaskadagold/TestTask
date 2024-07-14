@@ -4,7 +4,7 @@ namespace App;
 
 class View
 {
-    const TEMPLATE_DIR = APP_DIR . DIRECTORY_SEPARATOR . 'templates';
+    public const TEMPLATE_DIR = APP_DIR . DIRECTORY_SEPARATOR . 'templates';
 
     public function __construct(private readonly string $template)
     {

@@ -19,7 +19,7 @@ class UserFormService
 
         if (empty($errors = $this->validateUserForm($fields))) {
             $hashPass = password_hash($fields['password'], PASSWORD_DEFAULT);
-            if (! ($this->repository->create($fields['name'], $fields['email'], $hashPass)) ?: null) {
+            if ($this->repository->create($fields['name'], $fields['email'], $hashPass) === null) {
                 $errors[] = 'Ошибка при создании пользователя';
             } else {
                 $success = 'Новый пользователь успешно создан';
@@ -39,13 +39,13 @@ class UserFormService
 
     public function destroy(string $id): int
     {
-        if ((! is_numeric($id)) || gettype($id) === 'double') {
+        if ((! is_numeric($id)) || is_float($id)) {
             return 400;
         }
 
         $id = (int) $id;
 
-        if ($id === $_SESSION['id']) {
+        if ($id === $_SESSION['user']['id']) {
             return 406;
         }
 

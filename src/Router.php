@@ -10,6 +10,13 @@ class Router{
     /** @var array|Route[] */
     private array $routes = [];
 
+    /**
+     * Регистрация маршрутов в приложении
+     * @param string $url
+     * @param string $method
+     * @param array $callback
+     * @return void
+     */
     public function register(string $url, string $method, array $callback): void
     {
         $this->routes[] = new Route($url, $method, $callback);
@@ -25,7 +32,13 @@ class Router{
         $this->register($url, 'POST', $callback);
     }
 
-    /** @throws PageNotFoundException */
+    /**
+     * Поиск и выполнение необходимого маршрута
+     * @param string $requestUri
+     * @param string $requestMethod
+     * @throws \App\Exceptions\PageNotFoundException
+     * @return \App\Response
+     */
     public function run(string $requestUri, string $requestMethod): Response
     {
         foreach ($this->routes as $route)

@@ -20,11 +20,18 @@ class Route
         $this->callback = $callback;
     }
 
+    // Приведение url к единообразному виду
     private function normalizeUrl(string $url): string
     {
         return '/' . trim($url, '/');
     }
 
+    /**
+     * Проверка, подходит ли маршрут к реквесту (при условии, что маршрут может подразумевать передачу параметров)
+     * @param string $requestUri
+     * @param string $requestMethod
+     * @return bool
+     */
     public function match(string $requestUri, string $requestMethod): bool
     {
         return
@@ -34,6 +41,11 @@ class Route
             ) && $this->method === $requestMethod;
     }
 
+    /**
+     * Выполнение callback-функции, указанной в маршруте; парсинг переданных параметров
+     * @param string $requestUri
+     * @return \App\Response
+     */
     public function run(string $requestUri): Response
     {
         $urlParts = explode('/', $this->normalizeUrl($requestUri));

@@ -8,4 +8,9 @@ class AuthorizationService
     {
         return (bool) ($_SESSION['auth'] ?? false);
     }
+
+    public static function getUserName(): string
+    {
+        return $_SESSION['user']['name'] ?? '';
+    }
 }

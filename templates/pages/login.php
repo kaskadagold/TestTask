@@ -1,12 +1,11 @@
 <?php
 /** 
  * @var ?string $error
- * @var bool $isLoginPage
  */
 
 use App\View;
 
-View::includeTemplate('layouts/header.php', ['headerTitle' => 'Авторизация', 'isLoginPage' => $isLoginPage]);
+View::includeTemplate('layouts/header.php', ['headerTitle' => 'Авторизация', 'isLoginShown' => false]);
 
 if ($error !== null) {
     View::includeTemplate('blocks/messages/error.php', ['message' => $error]);
@@ -18,7 +17,7 @@ if ($error !== null) {
         <?php View::includeTemplate('forms/concrete-form-fields/login-form-fields.php'); ?>
 
         <input type="submit" name="login" value="Войти">
-        <a href="/">Отмена</a>
+        <a href="/" class="mx-10">Отмена</a>
     </form>
 </div>
 

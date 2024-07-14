@@ -8,8 +8,15 @@ use App\Services\AuthorizationService;
 
 class AuthController extends Controller
 {
-    const REDIRECT_URL = '/';
+    public const REDIRECT_URL = '/';
+    private readonly UsersRepository $repository;
 
+    public function __construct()
+    {
+        $this->repository = new UsersRepository();
+    }
+
+    // Отображение страницы с формой авторизации
     public function login(): Response
     {
         if (AuthorizationService::isAuthorized()) {
@@ -22,29 +29,23 @@ class AuthController extends Controller
             unset($_SESSION['loginFormError']);
         }
 
-        return $this->view('pages/login.php', [
-            'error' => $error,
-            'isLoginPage' => true,
-        ]);
+        return $this->view('pages/login.php', ['error' => $error]);
     }
 
+    // Процесс авторизации
     public function store(): Response
     {
         $redirectUrl = static::REDIRECT_URL;
         $error = true;
 
-        $name = $_POST['name'];
-        $password = $_POST['password'];
-        $user = $this->repository()->getUserByName($name);
+        $name = $this->validateData($_POST['name'] ?? null);
+        $password = $_POST['password'] ?? null;
+        $user = $this->repository->getUserByName($name);
 
         if ($user && password_verify($password, $user->password)) {
             $_SESSION['auth'] = true;
-            $_SESSION['id'] = $user->id;
-
-            setcookie('id', $user->id, [
-                'expires' => time() + 3600 * 24 * 60,
-                'path' => '/',
-            ]);
+            $_SESSION['user']['id'] = $user->id;
+            $_SESSION['user']['name'] = $user->name;
 
             $error = false;
         }
@@ -57,18 +58,22 @@ class AuthController extends Controller
         return new Response(header: 'Location: ' . $redirectUrl);
     }
 
+    // Процесс разавторизации
     public function destroy(): Response
     {
         $redirectUrl = static::REDIRECT_URL;
 
         unset($_SESSION['auth']);
-        unset($_SESSION['id']);
+        unset($_SESSION['user']);
 
         return new Response(header: 'Location: ' . $redirectUrl);
     }
 
-    private function repository(): UsersRepository
+    private function validateData(string $data): string
     {
-        return new UsersRepository();
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
     }
 }

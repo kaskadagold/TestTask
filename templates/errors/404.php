@@ -9,8 +9,7 @@ use App\View;
 View::includeTemplate('layouts/header.php', ['headerTitle' => $message, 'isLoginShown' => false]);
 ?>
 
-<p>Код ошибки: <?= $code ?></p>
-<p>Сообщение: <?= $message ?></p>
+<p>Запрошенной страницы не существует</p>
 
 <?php
 View::includeTemplate('layouts/footer.php');

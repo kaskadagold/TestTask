@@ -4,4 +4,4 @@
 $message ??= '';
 ?>
 
-<p style="color:green"><?= $message ?></p>
+<p class="text-green"><?= $message ?></p>
